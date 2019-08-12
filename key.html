@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <body>
+    <canvas id="canvas" class="border" width="600" height="600">
+
+
+    </canvas>
+    <div>
+        <div>
+            <label >Name:</label>
+            <input id="name" type="text">
+        </div>
+        <div>
+            <label>Desc:</label>
+            <input id="desc" type="textarea">
+        </div>
+    </div>
+    
+    
+    <button id="myButton" class="HTML button"
+            type="=button" onclick="onClick();">
+        HTML
+    </button>
+
+    <script>
+
+        const persons = [
+            {
+                name: "은진",
+                desc: "디발자가 되고 싶은 30대를 앞두고 있습니다."
+            },
+            {
+                name: "한울",
+                desc: "휴우.... 디발자 가르치기 참 힘들군요..."
+            }
+        ]
+        // const button = document.getElementById("myButton");
+        // if (button) {
+        //     button.addEventListener("click", e => {
+        //         console.log("My Button has been clicked");
+        //         return;
+        //     })
+        // } 
+        // else {
+        //     console.error("Can not find button by myButton id");
+        // }
+
+        const gap = 10;
+        const boxWidth = 600;
+        const boxHeight = 50;
+        let numberOfItems = 0;
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const box = document.getElementById('box');
+        
+
+        function onClick() {
+            const nameElement = document.getElementById("name");
+            const descElement = document.getElementById("desc");
+            
+            console.log(nameElement.value, descElement.value);
+
+            const currentY = numberOfItems*(boxHeight + gap);
+            ctx.strokeRect(0, numberOfItems*(boxHeight + gap) , boxWidth, boxHeight);
+            numberOfItems++;
+            ctx.fillText(nameElement.value, 30, currentY + 15);
+            ctx.fillText(descElement.value, 30, currentY + 30);
+            console.log('clicked!!');
+        }
+    </script>
+    <style>
+        .border {
+            border: 1px solid red;
+        }
+    </style>
+    </body>
+</html>

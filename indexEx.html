@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>2D Graphics Example Review</title>
+</head>
+
+<body>
+    <h1>2D Graphics Example Review</h1>
+    <canvas id="canvas" width="560" height="360"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');           // 일치하는 id 속성을 가진 요소를 찾고, 이를 나타내는 Element 객체를 반환
+        const ctx = canvas.getContext('2d');                        // 렌더링 컨텍스트 타입을 지정하는 하나의 파라미터를 가짐
+        const rect = canvas.getBoundingClientRect(); 
+                                                                    // 각종 객체가 들어있는 좌표 구하기
+        var canvasline = [];
+        var canvasbox = [];
+                                                                    // 전역변수로 배열 지정(mousemove의 배열을 위해)
+        let x = 0;                                                  // var, let 변수 선언 const 상수 선언
+        let y = 0;
+        let isDrawing = false;
+
+        let lastPressedKey;
+        let mode = 'none';
+
+         
+        document.addEventListener('keydown', e => {
+            const keyone = event.key;
+
+            lastPressedKey = keyone;
+
+            if (keyone === '1') {
+                mode = 'drawline';
+            } else {
+                mode = 'drawbox';
+            }
+        })                                                           // 예외 사항을 위해 false로 지정
+
+        canvas.addEventListener('mousedown', e => {
+            
+            if (mode === 'drawline') {
+                x = e.clientX - rect.left;                           // 브라우저 클라이언트 영역의 좌측상단을 기준으로 측정된 좌표
+                y = e.clientY - rect.top;                            // 사각형의 x선에서 왼쪽 값을 빼고, y선에서 상단의 값을 뺌
+                isDrawing = true;
+            }
+
+            if (mode === 'drawbox') {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+                isDrawing = true;
+            }                                                        // 그렇게 되면 현제 좌표의 값이 나옴                                               // 값이 true이기 때문에 다음 canvas로 넘어감
+        });
+
+        canvas.addEventListener('mousemove', e => {                  // mousemove는 마우스가 움직이는 순간의 좌표 위치
+            if (!isDrawing) {
+                return;
+            }
+            
+            if (mode === 'drawline') {
+                ctx.clearRect(0, 0, 560, 360);                                // 마우스 포인트가 실시간으로 움직이는 걸 표현하기 위해 
+                                                                              // 지정된 바탕만큼 삭제를 해준다고 선언
+                for(var i = 0; i < canvasline.length; i = i + 4) {            // 파라미터에 지정된 값 4개만큼 뽑기위해 i+4로 증가를 써줌
+                    drawLine(canvasline[i], canvasline[i + 1], canvasline[i + 2], canvasline[i + 3]);
+                }
+
+                for(var j = 0; j < canvasbox.length; j = j + 4) {
+                    drawbox(canvasbox[j], canvasbox[j + 1], canvasbox[j + 2], canvasbox[j + 3]);
+                }    
+                drawLine(x, y, e.clientX - rect.left, e.clientY - rect.top);
+            }
+            if (mode === 'drawbox') {
+                ctx.clearRect(0, 0, 560, 360);
+
+                for(var i = 0; i < canvasline.length; i = i + 4) {            // 파라미터에 지정된 값 4개만큼 뽑기위해 i+4로 증가를 써줌
+                    drawLine(canvasline[i], canvasline[i + 1], canvasline[i + 2], canvasline[i + 3]);
+                }
+
+                for(var j = 0; j < canvasbox.length; j = j + 4) {
+                    drawbox(canvasbox[j], canvasbox[j + 1], canvasbox[j + 2], canvasbox[j + 3]);
+                }
+                drawbox(x, y, (e.clientX - rect.left) - x, (e.clientY - rect.top) - y);
+            }                                                                // 실시간 좌표를 그리게 해줌
+        });                                                                  // 실시간 좌표를 구하기 때문에 isDrawing = false; 선언 불필요   
+
+        canvas.addEventListener('mouseup', e => {
+            if (!isDrawing) {
+                return;
+            }                                                                // mouseup은 클릭을 때는 순간의 좌표 위치
+            if (mode === 'drawline') {
+                canvasline.push(x, y, e.clientX - rect.left, e.clientY - rect.top);                          
+                isDrawing = false;                                  
+            }
+            if (mode === 'drawbox') {
+                canvasbox.push(x, y, (e.clientX - rect.left) - x, (e.clientY - rect.top) - y);
+                isDrawing = false;
+            }
+        });
+
+        function drawLine(x1, y1, x2, y2) {                      
+            ctx.beginPath();                                      
+            ctx.moveTo(x1, y1);                                 
+            ctx.lineTo(x2, y2);                                     
+            ctx.stroke();                                           
+            ctx.closePath();                                        
+        }
+        function drawbox(x, y, w, h) {
+            ctx.strokeRect(x, y, w, h);
+        }
+
+    </script>
+</body>
+</html>

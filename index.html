@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>2D Graphics Example</title>
+        <style>
+            #canvas {
+                border: 1px solid red;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" width="600" height="600"></canvas>
+        <p>Hello world</p>
+        <script>
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = 'green';
+            ctx.fillRect(10, 10, 150, 100);
+
+            let startX = 0;
+            let startY = 0;
+            let isDrawing = false;
+
+            drawLine(60,60, 100, 100);
+            drawCircle(100, 100, 30);
+            drawCircle(150, 100, 30);
+            drawCircle(100, 300, 30);
+
+            var lines = [];
+
+            function drawLine(x1, y1, x2, y2) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+
+            function drawCircle(x, y, r) {
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+
+            document.addEventListener('keydown', e => {
+                console.log('key down', e.key);
+            });
+
+            canvas.addEventListener('mousedown', (e) => {
+                drawCircle(e.clientX, e.clientY, 10);
+                startX = e.clientX;
+                startY = e.clientY;
+                isDrawing = true;
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                console.log("mouse move11");
+                if (!isDrawing) {
+                    return;
+                }
+                ctx.clearRect(0, 0, 600, 600);
+                drawLine(startX, startY, e.clientX, e.clientY);
+            });
+
+            canvas.addEventListener('mouseup', (e) => {
+                isDrawing = false;
+                console.log("mouse up");
+
+                lines.push({
+                    sx: startX,
+                    sy: startY,
+                    ex: e.clientX,
+                    ey: e.clientY
+                });
+
+                console.log(lines);
+            });
+
+        </script>
+    </body>
+</html>
